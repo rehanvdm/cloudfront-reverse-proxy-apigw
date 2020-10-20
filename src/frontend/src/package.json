@@ -1,0 +1,17 @@
+{
+  "name": "aws4-browser-example",
+  "version": "1.0.0",
+  "description": "Example project for how to use aws4 in the browser",
+  "main": "index.js",
+  "author": "Michael Hart <michael.hart.au@gmail.com> (http://github.com/mhart)",
+  "license": "ISC",
+  "scripts": {
+    "build": "browserify index.js -d --s js > ../dist/index.js "
+  },
+  "dependencies": {
+    "aws4": "^1.10.0"
+  },
+  "devDependencies": {
+    "browserify": "^16.5.1"
+  }
+}

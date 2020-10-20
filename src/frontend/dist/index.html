@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Cloudfront reverse proxy to API GW</h1>
+
+Cloudfront Domain: <input type="text" id="cfDomain" value=""  style="width: 500px;"><br/>
+Cloudfront API GW Mapping: <input type="text" id="cfDomainMapApi" value=""  style="width: 500px;"><br/>
+Cloudfront Custom Domain Mapping: <input type="text" id="cfDomainMapCust" value=""  style="width: 500px;"><br/>
+
+<h2>This section is only required if you are interested in the IAM auth</h2>
+<div style="margin-left: 10px; padding-left: 10px; border-left: lightgray solid 1px;">
+
+    <h3>Signing</h3>
+    <div style="margin-left: 10px; padding-left: 10px;">
+        <h4>Using API GW</h4>
+        API GW Domain: <input type="text" id="apiGwDomain" value=""  style="width: 500px;"><br/>
+        API GW Stage: <input type="text" id="apiGwStage" value="prod"  style="width: 300px;"><br/>
+
+        <h4>Using Custom Domain</h4>
+        Custom Domain: <input type="text" id="apiGwCustDomain" value=""  style="width: 500px;"><br/>
+        Custom Domain Mapping: <input type="text" id="apiGwCustMapping" value="prod"  style="width: 300px;"><br/>
+
+        <p style="font-size: small"> ? The API GW signing variables will be used for the Cloudfront API GW Mapping and similar logic for the Custom Domain.</p>
+    </div>
+
+
+    IAM accessKeyId: <input type="text" id="accessKeyId" style="width: 500px;"> <br/>
+    IAM secretAccessKey: <input type="text" id="secretAccessKey"  style="width: 500px;"> <br/>
+    IAM sessionToken: <input type="text" id="sessionToken"  style="width: 500px;"> <br/>
+    <p style="font-size: small"> ? You can get these values using the CLI command below. Replace 'rehan' with your profile name. Token valid for 12 hours by default.</p>
+    <pre>
+        aws --profile rehan sts get-session-token
+    </pre>
+</div>
+
+
+<p>
+    After filling the parameters above, open the Network tab of the browser and hit Do Requests to verify that NO OPTION
+    calls where made for the API calls. You can also verify the response to see the event that the Lambda function received.
+</p>
+
+<button onclick="start()">Do Requests</button>
+
+<pre id=content />
+
+<script>
+    /* Defaults making debugging locally easier */
+    document.getElementById("cfDomain").value = "d1k9l8acf4z9p6.cloudfront.net";
+    document.getElementById("cfDomainMapApi").value = "cf-apigw";
+    document.getElementById("cfDomainMapCust").value = "cf-cust-domain";
+
+    document.getElementById("apiGwDomain").value = "2i6ikjjk5b.execute-api.us-east-1.amazonaws.com";
+    document.getElementById("apiGwStage").value = "prod";
+    document.getElementById("apiGwCustDomain").value = "api.rehanvdm.com";
+    document.getElementById("apiGwCustMapping").value = "default";
+
+    document.getElementById("accessKeyId").value = "ASIAQA2LITXHUQNNXKWQ";
+    document.getElementById("secretAccessKey").value = "4NVO+hIOozMDcbkBUWnmqpDJVILehzXrjocF2saV";
+    document.getElementById("sessionToken").value = "FwoGZXIvYXdzEO3//////////wEaDGl1Dcd32j7iLlZxxiKBAYq81cMNfzRyXEmHY+FuoRTmKKN14rXttvk7j5JuC+l4yLMnl+XJtC1BpfbxUT0WDLJJFlqajte9I92SZqGZTC+L1DNPEFYCCPuI5YbjQi5ABff8jL5OANI7bonvq7xk7Q8I7qaYNhxiDYwJWDuxSq6H9XANr164vMpNgOpTu4kyJSiM6q78BTIpnyvikMMwml07SGdAiUrmHBICSLSUfPC4l08SEnW9GNSJ0qIqw94NouQ=";
+
+
+    function start()
+    {
+        const cloudFrontDomain = document.getElementById("cfDomain").value;
+        const cloudFrontApiGwProxyPath = document.getElementById("cfDomainMapApi").value;
+        const cloudFrontCustDomainProxyPath = document.getElementById("cfDomainMapCust").value;
+
+        /* Used for IAM signing */
+        const apiGwDomain = document.getElementById("apiGwDomain").value;
+        const apiGwStage = document.getElementById("apiGwStage").value;
+        const apiGwCustDomain = document.getElementById("apiGwCustDomain").value;
+        const apiGwCustMapping = document.getElementById("apiGwCustMapping").value;
+        const accessKeyId = document.getElementById("accessKeyId").value;
+        const secretAccessKey = document.getElementById("secretAccessKey").value;
+        const sessionToken = document.getElementById("sessionToken").value;
+
+        js.doRequests(cloudFrontDomain, cloudFrontApiGwProxyPath, cloudFrontCustDomainProxyPath,
+            apiGwDomain, apiGwStage, apiGwCustDomain, apiGwCustMapping,  accessKeyId, secretAccessKey, sessionToken);
+    }
+
+</script>
+<script src=index.js></script>
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
